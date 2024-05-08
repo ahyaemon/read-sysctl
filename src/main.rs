@@ -2,6 +2,7 @@ use std::{env, process};
 use crate::config::Config;
 
 mod config;
+mod file;
 
 fn main() {
     let args = env::args();
