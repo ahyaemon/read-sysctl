@@ -1,6 +1,13 @@
-use std::env;
+use std::{env, process};
+use crate::config::Config;
+
+mod config;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    println!("{:?}", args);
+    let args = env::args();
+    let config = Config::new(args).unwrap_or_else(|err| {
+        println!("コマンドライン引数の取得に失敗しました: {}", err);
+        process::exit(1);
+    });
+    println!("{:?}", config.filename);
 }
