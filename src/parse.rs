@@ -1,4 +1,4 @@
-pub fn parse_line(line: &str) -> Option<(&str, &str)> {
+pub fn parse_line(line: &str) -> Option<(String, String)> {
     if line.is_empty() {
         return None
     }
@@ -22,7 +22,7 @@ pub fn parse_line(line: &str) -> Option<(&str, &str)> {
     }
 
     let second = sp[1].trim();
-    Some((first, second))
+    Some((first.to_string(), second.to_string()))
 }
 
 #[cfg(test)]
@@ -73,7 +73,7 @@ mod tests {
     fn parse_line_valid() {
         assert_eq!(
             parse_line("endpoint = localhost:3000"),
-            Some(("endpoint", "localhost:3000"))
+            Some(("endpoint".to_string(), "localhost:3000".to_string()))
         );
     }
 
@@ -81,7 +81,7 @@ mod tests {
     fn parse_line_valid_with_space() {
         assert_eq!(
             parse_line("  endpoint  =  localhost:3000   "),
-            Some(("endpoint", "localhost:3000"))
+            Some(("endpoint".to_string(), "localhost:3000".to_string()))
         );
     }
 
@@ -89,7 +89,7 @@ mod tests {
     fn parse_line_valid_with_multiple_equals() {
         assert_eq!(
             parse_line("A = B = C"),
-            Some(("A", "B = C"))
+            Some(("A".to_string(), "B = C".to_string()))
         );
     }
 }
