@@ -3,6 +3,7 @@ use crate::config::Config;
 
 mod config;
 mod file;
+mod parse;
 
 fn main() {
     let args = env::args();
