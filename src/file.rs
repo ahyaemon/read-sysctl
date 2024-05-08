@@ -16,7 +16,7 @@ mod tests {
 
     #[test]
     fn file_exists() {
-        let mut actual = read_lines("resources/test.txt").unwrap();
+        let actual = read_lines("resources/test.txt").unwrap();
         let li: Vec<String> = actual.flatten().collect();
         assert_eq!(li, ["a", "", "bb"]);
     }
