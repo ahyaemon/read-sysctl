@@ -11,6 +11,10 @@ log.file = /var/log/console.log
 ; comment
 ```
 
+## 仕様
+
+https://man7.org/linux/man-pages/man5/sysctl.conf.5.html
+
 ## run
 
 ```bash
