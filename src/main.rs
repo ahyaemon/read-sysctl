@@ -52,6 +52,19 @@ mod tests {
     }
 
     #[test]
+    fn duplicate() {
+        let filename = "resources/sysctl_duplicate.conf";
+        let actual = create_hashmap(&filename).unwrap();
+        let expected = [
+            ("key".to_string(), "value2".to_string())
+        ]
+            .iter()
+            .cloned()
+            .collect();
+        assert_eq!(actual, expected)
+    }
+
+    #[test]
     #[should_panic]
     fn file_not_exists() {
         let filename = "resources/xxx";
