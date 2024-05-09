@@ -47,7 +47,7 @@ mod tests {
         ]
             .iter()
             .map(|(key, value)| (key.to_string(), value.to_string()))
-            .collect::<HashMap<_, _>>();
+            .collect();
         assert_eq!(actual, expected);
     }
 
