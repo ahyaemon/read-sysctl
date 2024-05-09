@@ -27,7 +27,7 @@ fn main() {
 fn create_hashmap(filename: &str) -> Result<HashMap<String, String>, Error> {
     let hashmap = read_lines(filename)?
         .flatten()
-        .filter_map(|line| parse_line(&line) )
+        .filter_map(|line| parse_line(&line).unwrap() )
         .collect();
     Ok(hashmap)
 }
@@ -69,5 +69,26 @@ mod tests {
     fn file_not_exists() {
         let filename = "resources/xxx";
         create_hashmap(&filename).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn invalid_line() {
+        let filename = "resources/sysctl_invalid.conf";
+        create_hashmap(&filename).unwrap();
+    }
+
+    #[test]
+    fn invalid_line_with_hyphen() {
+        let filename = "resources/sysctl.conf";
+        let actual = create_hashmap(&filename).unwrap();
+        let expected = vec![
+            ("key1", "value1"),
+            ("key1", "value2"),
+        ]
+            .iter()
+            .map(|(key, value)| (key.to_string(), value.to_string()))
+            .collect();
+        assert_eq!(actual, expected);
     }
 }
