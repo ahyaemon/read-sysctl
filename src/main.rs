@@ -1,6 +1,5 @@
 use std::{env, process};
 use std::collections::HashMap;
-use std::io::Error;
 use crate::config::Config;
 use crate::file::read_lines;
 use crate::parse::parse_line;
@@ -18,17 +17,20 @@ fn main() {
         });
     let result = create_hashmap(&config.filename)
         .unwrap_or_else(|err| {
-            println!("ハッシュマップの作成に失敗しました: {}, filename: {}", err, &config.filename);
+            println!("ハッシュマップの作成に失敗しました: {} filename: {}", err, &config.filename);
             process::exit(1);
         });
     println!("{:?}", result);
 }
 
-fn create_hashmap(filename: &str) -> Result<HashMap<String, String>, Error> {
-    let hashmap = read_lines(filename)?
-        .flatten()
-        .filter_map(|line| parse_line(&line).unwrap() )
-        .collect();
+fn create_hashmap(filename: &str) -> Result<HashMap<String, String>, String> {
+    let lines = read_lines(filename).map_err(|e| e.to_string())?;
+    let mut hashmap = HashMap::new();
+    for line in lines.flatten() {
+        if let Some((key, value)) = parse_line(&line)? {
+            hashmap.insert(key, value);
+        }
+    }
     Ok(hashmap)
 }
 
@@ -39,56 +41,66 @@ mod tests {
     #[test]
     fn create() {
         let filename = "resources/sysctl.conf";
-        let actual = create_hashmap(&filename).unwrap();
-        let expected = vec![
-            ("debug", "true"),
-            ("endpoint", "localhost:3000"),
-            ("log.file", "/var/log/console.log")
-        ]
-            .iter()
-            .map(|(key, value)| (key.to_string(), value.to_string()))
-            .collect();
+        let actual = create_hashmap(&filename);
+        let expected = Ok(
+            [
+                ("debug", "true"),
+                ("endpoint", "localhost:3000"),
+                ("log.file", "/var/log/console.log")
+            ]
+                .iter()
+                .map(|(key, value)| (key.to_string(), value.to_string()))
+                .collect()
+        );
         assert_eq!(actual, expected);
     }
 
     #[test]
     fn duplicate() {
         let filename = "resources/sysctl_duplicate.conf";
-        let actual = create_hashmap(&filename).unwrap();
-        let expected = [
-            ("key".to_string(), "value2".to_string())
-        ]
-            .iter()
-            .cloned()
-            .collect();
-        assert_eq!(actual, expected)
+        let actual = create_hashmap(&filename);
+        let expected = Ok(
+            [
+                ("key".to_string(), "value2".to_string()),
+            ]
+                .iter()
+                .cloned()
+                .collect()
+        );
+        assert_eq!(actual, expected);
     }
 
     #[test]
-    #[should_panic]
     fn file_not_exists() {
         let filename = "resources/xxx";
-        create_hashmap(&filename).unwrap();
+        match create_hashmap(&filename) {
+            Ok(_) => { panic!() },
+            Err(e) => { println!("{e}") }
+        }
     }
 
     #[test]
-    #[should_panic]
     fn invalid_line() {
         let filename = "resources/sysctl_invalid.conf";
-        create_hashmap(&filename).unwrap();
+        match create_hashmap(&filename) {
+            Ok(_) => { panic!() },
+            Err(e) => { println!("{e}") }
+        }
     }
 
     #[test]
     fn invalid_line_with_hyphen() {
-        let filename = "resources/sysctl.conf";
-        let actual = create_hashmap(&filename).unwrap();
-        let expected = vec![
-            ("key1", "value1"),
-            ("key1", "value2"),
-        ]
-            .iter()
-            .map(|(key, value)| (key.to_string(), value.to_string()))
-            .collect();
+        let filename = "resources/sysctl_invalid_hyphen.conf";
+        let actual = create_hashmap(&filename);
+        let expected = Ok(
+            vec![
+                ("key1", "value1"),
+                ("key2", "value2"),
+            ]
+                .iter()
+                .map(|(key, value)| (key.to_string(), value.to_string()))
+                .collect()
+        );
         assert_eq!(actual, expected);
     }
 }
