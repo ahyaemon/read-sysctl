@@ -38,8 +38,7 @@ fn create_schema(filename: &str) -> Result<HashMap<String, String>, String> {
     let lines = read_lines(filename).map_err(|e| e.to_string())?;
     let mut hashmap = HashMap::new();
     for line in lines.flatten() {
-        // TODO parse_line に separator を追加
-        if let Some((key, value)) = parse_line(&line)? {
+        if let Some((key, value)) = parse_line(&line, "->")? {
             hashmap.insert(key, value);
         }
     }
@@ -50,7 +49,7 @@ fn create_hashmap(filename: &str) -> Result<HashMap<String, String>, String> {
     let lines = read_lines(filename).map_err(|e| e.to_string())?;
     let mut hashmap = HashMap::new();
     for line in lines.flatten() {
-        if let Some((key, value)) = parse_line(&line)? {
+        if let Some((key, value)) = parse_line(&line, "=")? {
             hashmap.insert(key, value);
         }
     }
