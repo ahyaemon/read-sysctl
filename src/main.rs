@@ -15,6 +15,12 @@ fn main() {
             println!("コマンドライン引数の取得に失敗しました: {}", err);
             process::exit(1);
         });
+
+    println!("filename: {}", config.filename);
+    if let Some(schema_filename) = config.schema_filename {
+        println!("schema_filename: {}", schema_filename);
+    }
+
     let result = create_hashmap(&config.filename)
         .unwrap_or_else(|err| {
             println!("ハッシュマップの作成に失敗しました: {} filename: {}", err, &config.filename);

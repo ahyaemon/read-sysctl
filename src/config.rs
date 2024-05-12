@@ -2,6 +2,7 @@ use std::env;
 
 pub struct Config {
     pub filename: String,
+    pub schema_filename: Option<String>,
 }
 
 impl Config {
@@ -11,9 +12,11 @@ impl Config {
 
         let filename = match args.next() {
             Some(arg) => arg,
-            None => return Err("一つ目の引数の取得に失敗しました。ファイル名を指定してください。"),
+            None => return Err("読み取り対象ファイル名の取得に失敗しました。ファイル名を指定してください。"),
         };
 
-        Ok(Config { filename })
+        let schema_filename = args.next();
+
+        Ok(Config { filename, schema_filename })
     }
 }
