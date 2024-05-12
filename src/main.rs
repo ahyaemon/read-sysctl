@@ -17,9 +17,14 @@ fn main() {
         });
 
     println!("filename: {}", config.filename);
-    if let Some(schema_filename) = config.schema_filename {
+
+    let schema = config.schema_filename.map(|schema_filename| {
         println!("schema_filename: {}", schema_filename);
-    }
+        create_schema(&schema_filename).unwrap_or_else(|err| {
+            println!("Failed to read schema file: {} filename: {}", err, &config.filename);
+            process::exit(1);
+        })
+    });
 
     let result = create_hashmap(&config.filename)
         .unwrap_or_else(|err| {
@@ -27,6 +32,18 @@ fn main() {
             process::exit(1);
         });
     println!("{:?}", result);
+}
+
+fn create_schema(filename: &str) -> Result<HashMap<String, String>, String> {
+    let lines = read_lines(filename).map_err(|e| e.to_string())?;
+    let mut hashmap = HashMap::new();
+    for line in lines.flatten() {
+        // TODO parse_line に separator を追加
+        if let Some((key, value)) = parse_line(&line)? {
+            hashmap.insert(key, value);
+        }
+    }
+    Ok(hashmap)
 }
 
 fn create_hashmap(filename: &str) -> Result<HashMap<String, String>, String> {
