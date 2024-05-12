@@ -1,5 +1,6 @@
 use std::{env, process};
 use std::collections::HashMap;
+use std::hash::Hash;
 use crate::config::Config;
 use crate::file::read_lines;
 use crate::parse::parse_line;
@@ -7,6 +8,8 @@ use crate::parse::parse_line;
 mod config;
 mod file;
 mod parse;
+
+type Dict = HashMap<String, String>;
 
 fn main() {
     let args = env::args();
@@ -26,6 +29,8 @@ fn main() {
         })
     });
 
+    println!("{:?}", schema.unwrap());
+
     let result = create_hashmap(&config.filename)
         .unwrap_or_else(|err| {
             println!("ハッシュマップの作成に失敗しました: {} filename: {}", err, &config.filename);
@@ -34,7 +39,7 @@ fn main() {
     println!("{:?}", result);
 }
 
-fn create_schema(filename: &str) -> Result<HashMap<String, String>, String> {
+fn create_schema(filename: &str) -> Result<Dict, String> {
     let lines = read_lines(filename).map_err(|e| e.to_string())?;
     let mut hashmap = HashMap::new();
     for line in lines.flatten() {
@@ -45,7 +50,7 @@ fn create_schema(filename: &str) -> Result<HashMap<String, String>, String> {
     Ok(hashmap)
 }
 
-fn create_hashmap(filename: &str) -> Result<HashMap<String, String>, String> {
+fn create_hashmap(filename: &str) -> Result<Dict, String> {
     let lines = read_lines(filename).map_err(|e| e.to_string())?;
     let mut hashmap = HashMap::new();
     for line in lines.flatten() {
