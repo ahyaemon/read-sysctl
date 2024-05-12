@@ -1,5 +1,4 @@
 use std::{env, process};
-use std::collections::HashMap;
 use crate::config::Config;
 use crate::schema::read_schema;
 use crate::sysctl::read_sysctl;
@@ -9,8 +8,7 @@ mod file;
 mod parse;
 mod sysctl;
 mod schema;
-
-type Dict = HashMap<String, String>;
+mod validator;
 
 fn main() {
     let args = env::args();

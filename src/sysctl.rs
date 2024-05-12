@@ -1,16 +1,27 @@
 use std::collections::HashMap;
-use crate::{Dict};
 use crate::file::read_lines;
 use crate::parse::parse_line;
+use crate::schema::SchemaDict;
 
-pub fn read_sysctl(filename: &str, schema: Option<Dict>) -> Result<Dict, String> {
+type Dict = HashMap<String, String>;
+
+pub fn read_sysctl(filename: &str, schema: Option<SchemaDict>) -> Result<Dict, String> {
     let lines = read_lines(filename).map_err(|e| e.to_string())?;
     let mut hashmap = HashMap::new();
     for line in lines.flatten() {
         if let Some((key, value)) = parse_line(&line, "=")? {
-            hashmap.insert(key, value);
+            hashmap.insert(key.clone(), value);
+
+            if let Some(schema) = &schema {
+                let validator = schema.get(&key);
+            }
+            // TODO schema を使ってバリデーションする
         }
     }
+    // if let Some(schema) = schema {
+    //     let type = schema.get();
+    //     validate_line()
+    // }
     Ok(hashmap)
 }
 

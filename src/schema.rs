@@ -1,14 +1,17 @@
 use std::collections::HashMap;
-use crate::Dict;
 use crate::file::read_lines;
 use crate::parse::parse_line;
+use crate::validator::Validator;
 
-pub fn read_schema(filename: &str) -> Result<Dict, String> {
+pub type SchemaDict = HashMap<String, Validator>;
+
+pub fn read_schema(filename: &str) -> Result<SchemaDict, String> {
     let lines = read_lines(filename).map_err(|e| e.to_string())?;
     let mut hashmap = HashMap::new();
     for line in lines.flatten() {
         if let Some((key, value)) = parse_line(&line, "->")? {
-            hashmap.insert(key, value);
+            let validator = Validator::from(&value)?;
+            hashmap.insert(key, validator);
         }
     }
     Ok(hashmap)
@@ -22,16 +25,11 @@ mod tests {
     fn read() {
         let filename = "resources/schema.txt";
         let actual = read_schema(&filename);
-        let expected = Ok(
-            [
-                ("endpoint", "string"),
-                ("debug", "bool"),
-                ("log.file", "string")
-            ]
-                .iter()
-                .map(|(key, value)| (key.to_string(), value.to_string()))
-                .collect()
-        );
+        let expected = Ok(HashMap::from([
+            ("endpoint".to_string(), Validator::String),
+            ("debug".to_string(), Validator::Bool),
+            ("log.file".to_string(), Validator::String),
+        ]));
         assert_eq!(actual, expected);
     }
 }
