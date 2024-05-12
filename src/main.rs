@@ -1,14 +1,14 @@
 use std::{env, process};
 use std::collections::HashMap;
 use crate::config::Config;
-use crate::file::read_lines;
-use crate::parse::parse_line;
+use crate::schema::read_schema;
 use crate::sysctl::read_sysctl;
 
 mod config;
 mod file;
 mod parse;
 mod sysctl;
+mod schema;
 
 type Dict = HashMap<String, String>;
 
@@ -24,7 +24,7 @@ fn main() {
 
     let schema = config.schema_filename.map(|schema_filename| {
         println!("schema_filename: {}", schema_filename);
-        create_schema(&schema_filename).unwrap_or_else(|err| {
+        read_schema(&schema_filename).unwrap_or_else(|err| {
             println!("Failed to read schema file: {} filename: {}", err, &config.filename);
             process::exit(1);
         })
@@ -38,15 +38,4 @@ fn main() {
             process::exit(1);
         });
     println!("{:?}", result);
-}
-
-fn create_schema(filename: &str) -> Result<Dict, String> {
-    let lines = read_lines(filename).map_err(|e| e.to_string())?;
-    let mut hashmap = HashMap::new();
-    for line in lines.flatten() {
-        if let Some((key, value)) = parse_line(&line, "->")? {
-            hashmap.insert(key, value);
-        }
-    }
-    Ok(hashmap)
 }
