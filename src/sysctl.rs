@@ -3,7 +3,7 @@ use crate::{Dict};
 use crate::file::read_lines;
 use crate::parse::parse_line;
 
-pub fn read_sysctl(filename: &str) -> Result<Dict, String> {
+pub fn read_sysctl(filename: &str, schema: Option<Dict>) -> Result<Dict, String> {
     let lines = read_lines(filename).map_err(|e| e.to_string())?;
     let mut hashmap = HashMap::new();
     for line in lines.flatten() {
@@ -21,7 +21,7 @@ mod tests {
     #[test]
     fn create() {
         let filename = "resources/sysctl.conf";
-        let actual = read_sysctl(&filename);
+        let actual = read_sysctl(&filename, None);
         let expected = Ok(
             [
                 ("debug", "true"),
@@ -38,7 +38,7 @@ mod tests {
     #[test]
     fn duplicate() {
         let filename = "resources/sysctl_duplicate.conf";
-        let actual = read_sysctl(&filename);
+        let actual = read_sysctl(&filename, None);
         let expected = Ok(
             [
                 ("key".to_string(), "value2".to_string()),
@@ -53,7 +53,7 @@ mod tests {
     #[test]
     fn file_not_exists() {
         let filename = "resources/xxx";
-        match read_sysctl(&filename) {
+        match read_sysctl(&filename, None) {
             Ok(_) => { panic!() },
             Err(e) => { println!("{e}") }
         }
@@ -62,7 +62,7 @@ mod tests {
     #[test]
     fn invalid_line() {
         let filename = "resources/sysctl_invalid.conf";
-        match read_sysctl(&filename) {
+        match read_sysctl(&filename, None) {
             Ok(_) => { panic!() },
             Err(e) => { println!("{e}") }
         }
@@ -71,7 +71,7 @@ mod tests {
     #[test]
     fn invalid_line_with_hyphen() {
         let filename = "resources/sysctl_invalid_hyphen.conf";
-        let actual = read_sysctl(&filename);
+        let actual = read_sysctl(&filename, None);
         let expected = Ok(
             vec![
                 ("key1", "value1"),

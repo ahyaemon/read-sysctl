@@ -30,9 +30,9 @@ fn main() {
         })
     });
 
-    println!("{:?}", schema.unwrap());
+    println!("{:?}", &schema);
 
-    let result = read_sysctl(&config.filename)
+    let result = read_sysctl(&config.filename, schema)
         .unwrap_or_else(|err| {
             println!("ハッシュマップの作成に失敗しました: {} filename: {}", err, &config.filename);
             process::exit(1);
