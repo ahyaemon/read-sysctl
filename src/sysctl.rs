@@ -10,18 +10,15 @@ pub fn read_sysctl(filename: &str, schema: Option<SchemaDict>) -> Result<Dict, S
     let mut hashmap = HashMap::new();
     for line in lines.flatten() {
         if let Some((key, value)) = parse_line(&line, "=")? {
-            hashmap.insert(key.clone(), value);
+            hashmap.insert(key.clone(), value.clone());
 
             if let Some(schema) = &schema {
-                let validator = schema.get(&key);
+                if let Some(validator) = schema.get(&key) {
+                    validator.validate(&value)?
+                }
             }
-            // TODO schema を使ってバリデーションする
         }
     }
-    // if let Some(schema) = schema {
-    //     let type = schema.get();
-    //     validate_line()
-    // }
     Ok(hashmap)
 }
 
