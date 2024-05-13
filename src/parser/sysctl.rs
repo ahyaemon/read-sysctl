@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use crate::file::read_lines;
-use crate::parse::parse_line;
-use crate::schema::SchemaDict;
+use crate::parser::parse::parse_line;
+use crate::parser::schema::SchemaDict;
 
 type Dict = HashMap<String, String>;
 
@@ -25,7 +25,7 @@ pub fn read_sysctl(filename: &str, schema: Option<SchemaDict>) -> Result<Dict, S
 
 #[cfg(test)]
 mod tests {
-    use crate::schema::read_schema;
+    use crate::parser::schema::read_schema;
 
     use super::*;
 
@@ -38,9 +38,9 @@ mod tests {
             ("endpoint", "localhost:3000"),
             ("log.file", "/var/log/console.log"),
         ]
-            .iter()
-            .map(|(key, value)| (key.to_string(), value.to_string()))
-            .collect());
+        .iter()
+        .map(|(key, value)| (key.to_string(), value.to_string()))
+        .collect());
         assert_eq!(actual, expected);
     }
 

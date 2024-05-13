@@ -1,15 +1,12 @@
 use std::{env, process};
 
 use crate::config::Config;
-use crate::schema::read_schema;
-use crate::sysctl::read_sysctl;
+use crate::parser::schema::read_schema;
+use crate::parser::sysctl::read_sysctl;
 
 mod config;
 mod file;
-mod parse;
-mod schema;
-mod sysctl;
-mod validator;
+mod parser;
 
 fn main() {
     let args = env::args();

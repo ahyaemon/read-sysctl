@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use crate::file::read_lines;
-use crate::parse::parse_line;
-use crate::validator::Validator;
+use crate::parser::parse::parse_line;
+use crate::parser::validator::Validator;
 
 pub type SchemaDict = HashMap<String, Validator>;
 

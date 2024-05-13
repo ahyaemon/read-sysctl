@@ -7,7 +7,7 @@ pub enum Validator {
 }
 
 impl Validator {
-    pub fn from(value: &str) -> Result<Self, String> {
+    pub(super) fn from(value: &str) -> Result<Self, String> {
         match value {
             "string" => Ok(Self::String),
             "bool" => Ok(Self::Bool),
@@ -17,7 +17,7 @@ impl Validator {
         }
     }
 
-    pub fn validate(&self, value: &str) -> Result<(), String> {
+    pub(super) fn validate(&self, value: &str) -> Result<(), String> {
         match self {
             Self::String => Ok(()),
             Self::Bool => {

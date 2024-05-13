@@ -1,4 +1,4 @@
-pub fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>, String> {
+pub(super) fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>, String> {
     if line.is_empty() {
         return Ok(None);
     }
