@@ -24,11 +24,12 @@ pub fn read_sysctl(filename: &str, schema: Option<SchemaDict>) -> Result<Dict, S
 
 #[cfg(test)]
 mod tests {
+    use crate::schema::read_schema;
     use super::*;
 
     #[test]
     fn create() {
-        let filename = "resources/sysctl.conf";
+        let filename = "resources/test/sysctl/sysctl.conf";
         let actual = read_sysctl(&filename, None);
         let expected = Ok(
             [
@@ -45,7 +46,7 @@ mod tests {
 
     #[test]
     fn duplicate() {
-        let filename = "resources/sysctl_duplicate.conf";
+        let filename = "resources/test/sysctl/sysctl_duplicate.conf";
         let actual = read_sysctl(&filename, None);
         let expected = Ok(
             [
@@ -60,7 +61,7 @@ mod tests {
 
     #[test]
     fn file_not_exists() {
-        let filename = "resources/xxx";
+        let filename = "resources/test/sysctl/xxx";
         match read_sysctl(&filename, None) {
             Ok(_) => { panic!() },
             Err(e) => { println!("{e}") }
@@ -69,7 +70,7 @@ mod tests {
 
     #[test]
     fn invalid_line() {
-        let filename = "resources/sysctl_invalid.conf";
+        let filename = "resources/test/sysctl/sysctl_invalid.conf";
         match read_sysctl(&filename, None) {
             Ok(_) => { panic!() },
             Err(e) => { println!("{e}") }
@@ -78,7 +79,7 @@ mod tests {
 
     #[test]
     fn invalid_line_with_hyphen() {
-        let filename = "resources/sysctl_invalid_hyphen.conf";
+        let filename = "resources/test/sysctl/sysctl_invalid_hyphen.conf";
         let actual = read_sysctl(&filename, None);
         let expected = Ok(
             vec![
@@ -90,5 +91,36 @@ mod tests {
                 .collect()
         );
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_with_schema() {
+        let schema_filename = "resources/test/sysctl/schema/schema.txt";
+        let schema = read_schema(schema_filename).unwrap();
+
+        let filename = "resources/test/sysctl/schema/sysctl_valid.conf";
+        let actual = read_sysctl(&filename, Some(schema));
+
+        let expected = Ok(HashMap::from([
+            ("debug".to_string(), "true".to_string()),
+            ("endpoint".to_string(), "localhost:3000".to_string()),
+            ("log.file".to_string(), "/var/log/console.log".to_string()),
+        ]));
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_with_schema() {
+        let schema_filename = "resources/test/sysctl/schema/schema.txt";
+        let schema = read_schema(schema_filename).unwrap();
+
+        let filename = "resources/test/sysctl/schema/sysctl_invalid.conf";
+        let actual = read_sysctl(&filename, Some(schema));
+
+        match actual {
+            Ok(_) => { panic!() },
+            Err(e) => { println!("{e}") }
+        }
     }
 }

@@ -23,7 +23,7 @@ mod tests {
 
     #[test]
     fn read() {
-        let filename = "resources/schema.txt";
+        let filename = "resources/test/schema/schema.txt";
         let actual = read_schema(&filename);
         let expected = Ok(HashMap::from([
             ("endpoint".to_string(), Validator::String),
