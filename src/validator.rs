@@ -7,7 +7,6 @@ pub enum Validator {
 }
 
 impl Validator {
-
     pub fn from(value: &str) -> Result<Self, String> {
         match value {
             "string" => Ok(Self::String),
@@ -25,21 +24,26 @@ impl Validator {
                 if ["true", "false"].contains(&value) {
                     Ok(())
                 } else {
-                    Err(format!("Value does not match to schema. value: {}, schema: bool", value))
+                    Err(format!(
+                        "Value does not match to schema. value: {}, schema: bool",
+                        value
+                    ))
                 }
             }
-            Self::Int => {
-                match value.parse::<i32>() {
-                    Ok(_) => Ok(()),
-                    Err(_) => Err(format!("Value does not match to schema. value: {}, schema: int", value))
-                }
-            }
-            Self::Float => {
-                match value.parse::<f64>() {
-                    Ok(_) => Ok(()),
-                    Err(_) => Err(format!("Value does not match to schema. value: {}, schema: float", value))
-                }
-            }
+            Self::Int => match value.parse::<i32>() {
+                Ok(_) => Ok(()),
+                Err(_) => Err(format!(
+                    "Value does not match to schema. value: {}, schema: int",
+                    value
+                )),
+            },
+            Self::Float => match value.parse::<f64>() {
+                Ok(_) => Ok(()),
+                Err(_) => Err(format!(
+                    "Value does not match to schema. value: {}, schema: float",
+                    value
+                )),
+            },
         }
     }
 }
@@ -97,7 +101,10 @@ mod validate {
     fn bool_err() {
         let validator = Validator::Bool;
         let actual = validator.validate("hello");
-        assert_eq!(actual, Err("Value does not match to schema. value: hello, schema: bool".to_string()));
+        assert_eq!(
+            actual,
+            Err("Value does not match to schema. value: hello, schema: bool".to_string())
+        );
     }
 
     #[test]
@@ -111,7 +118,10 @@ mod validate {
     fn int_err() {
         let validator = Validator::Int;
         let actual = validator.validate("hello");
-        assert_eq!(actual, Err("Value does not match to schema. value: hello, schema: int".to_string()));
+        assert_eq!(
+            actual,
+            Err("Value does not match to schema. value: hello, schema: int".to_string())
+        );
     }
 
     #[test]
@@ -125,6 +135,9 @@ mod validate {
     fn float_err() {
         let validator = Validator::Float;
         let actual = validator.validate("hello");
-        assert_eq!(actual, Err("Value does not match to schema. value: hello, schema: float".to_string()));
+        assert_eq!(
+            actual,
+            Err("Value does not match to schema. value: hello, schema: float".to_string())
+        );
     }
 }

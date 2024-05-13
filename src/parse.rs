@@ -1,6 +1,6 @@
 pub fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>, String> {
     if line.is_empty() {
-        return Ok(None)
+        return Ok(None);
     }
 
     let mut is_ignore_invalid_line = false;
@@ -12,11 +12,11 @@ pub fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>,
     }
 
     if line.starts_with("#") {
-        return Ok(None)
+        return Ok(None);
     }
 
     if line.starts_with(";") {
-        return Ok(None)
+        return Ok(None);
     }
 
     let sp: Vec<&str> = line.splitn(2, sep).collect();
@@ -25,7 +25,7 @@ pub fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>,
             Ok(None)
         } else {
             Err(format!("不正な行が検知されました。[{}]", line))
-        }
+        };
     }
 
     let first = sp[0].trim();
@@ -34,7 +34,7 @@ pub fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>,
             Ok(None)
         } else {
             Err(format!("不正な行が検知されました。[{}]", line))
-        }
+        };
     }
 
     let second = sp[1].trim();
@@ -47,26 +47,17 @@ mod tests {
 
     #[test]
     fn parse_line_comment_hash() {
-        assert_eq!(
-            parse_line("#comment", "="),
-            Ok(None)
-        );
+        assert_eq!(parse_line("#comment", "="), Ok(None));
     }
 
     #[test]
     fn parse_line_comment_semicolon() {
-        assert_eq!(
-            parse_line(";comment", "="),
-            Ok(None)
-        );
+        assert_eq!(parse_line(";comment", "="), Ok(None));
     }
 
     #[test]
     fn parse_line_empty() {
-        assert_eq!(
-            parse_line("", "="),
-            Ok(None)
-        );
+        assert_eq!(parse_line("", "="), Ok(None));
     }
 
     #[test]
@@ -79,10 +70,7 @@ mod tests {
 
     #[test]
     fn parse_line_invalid_with_hyphen() {
-        assert_eq!(
-            parse_line("- xxx", "="),
-            Ok(None)
-        );
+        assert_eq!(parse_line("- xxx", "="), Ok(None));
     }
 
     #[test]

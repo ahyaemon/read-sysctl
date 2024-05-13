@@ -1,7 +1,7 @@
-use std::collections::HashMap;
 use crate::file::read_lines;
 use crate::parse::parse_line;
 use crate::schema::SchemaDict;
+use std::collections::HashMap;
 
 type Dict = HashMap<String, String>;
 
@@ -24,23 +24,21 @@ pub fn read_sysctl(filename: &str, schema: Option<SchemaDict>) -> Result<Dict, S
 
 #[cfg(test)]
 mod tests {
-    use crate::schema::read_schema;
     use super::*;
+    use crate::schema::read_schema;
 
     #[test]
     fn create() {
         let filename = "resources/test/sysctl/sysctl.conf";
         let actual = read_sysctl(&filename, None);
-        let expected = Ok(
-            [
-                ("debug", "true"),
-                ("endpoint", "localhost:3000"),
-                ("log.file", "/var/log/console.log")
-            ]
-                .iter()
-                .map(|(key, value)| (key.to_string(), value.to_string()))
-                .collect()
-        );
+        let expected = Ok([
+            ("debug", "true"),
+            ("endpoint", "localhost:3000"),
+            ("log.file", "/var/log/console.log"),
+        ]
+        .iter()
+        .map(|(key, value)| (key.to_string(), value.to_string()))
+        .collect());
         assert_eq!(actual, expected);
     }
 
@@ -48,14 +46,10 @@ mod tests {
     fn duplicate() {
         let filename = "resources/test/sysctl/sysctl_duplicate.conf";
         let actual = read_sysctl(&filename, None);
-        let expected = Ok(
-            [
-                ("key".to_string(), "value2".to_string()),
-            ]
-                .iter()
-                .cloned()
-                .collect()
-        );
+        let expected = Ok([("key".to_string(), "value2".to_string())]
+            .iter()
+            .cloned()
+            .collect());
         assert_eq!(actual, expected);
     }
 
@@ -63,8 +57,12 @@ mod tests {
     fn file_not_exists() {
         let filename = "resources/test/sysctl/xxx";
         match read_sysctl(&filename, None) {
-            Ok(_) => { panic!() },
-            Err(e) => { println!("{e}") }
+            Ok(_) => {
+                panic!()
+            }
+            Err(e) => {
+                println!("{e}")
+            }
         }
     }
 
@@ -72,8 +70,12 @@ mod tests {
     fn invalid_line() {
         let filename = "resources/test/sysctl/sysctl_invalid.conf";
         match read_sysctl(&filename, None) {
-            Ok(_) => { panic!() },
-            Err(e) => { println!("{e}") }
+            Ok(_) => {
+                panic!()
+            }
+            Err(e) => {
+                println!("{e}")
+            }
         }
     }
 
@@ -81,15 +83,10 @@ mod tests {
     fn invalid_line_with_hyphen() {
         let filename = "resources/test/sysctl/sysctl_invalid_hyphen.conf";
         let actual = read_sysctl(&filename, None);
-        let expected = Ok(
-            vec![
-                ("key1", "value1"),
-                ("key2", "value2"),
-            ]
-                .iter()
-                .map(|(key, value)| (key.to_string(), value.to_string()))
-                .collect()
-        );
+        let expected = Ok(vec![("key1", "value1"), ("key2", "value2")]
+            .iter()
+            .map(|(key, value)| (key.to_string(), value.to_string()))
+            .collect());
         assert_eq!(actual, expected);
     }
 
@@ -119,8 +116,12 @@ mod tests {
         let actual = read_sysctl(&filename, Some(schema));
 
         match actual {
-            Ok(_) => { panic!() },
-            Err(e) => { println!("{e}") }
+            Ok(_) => {
+                panic!()
+            }
+            Err(e) => {
+                println!("{e}")
+            }
         }
     }
 }
