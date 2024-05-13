@@ -14,7 +14,7 @@ mod validator;
 fn main() {
     let args = env::args();
     let config = Config::new(args).unwrap_or_else(|err| {
-        println!("コマンドライン引数の取得に失敗しました: {}", err);
+        println!("Failed to get command line arguments. {}", err);
         process::exit(1);
     });
 
@@ -24,8 +24,8 @@ fn main() {
         println!("schema_filename: {}", schema_filename);
         read_schema(&schema_filename).unwrap_or_else(|err| {
             println!(
-                "Failed to read schema file: {} filename: {}",
-                err, &config.filename
+                "Failed to read schema file. filename: {}. {}",
+                &config.filename, err
             );
             process::exit(1);
         })
@@ -33,8 +33,8 @@ fn main() {
 
     let result = read_sysctl(&config.filename, schema).unwrap_or_else(|err| {
         println!(
-            "ハッシュマップの作成に失敗しました: {} filename: {}",
-            err, &config.filename
+            "Failed to read sysctl file. filename: {}. {}",
+            &config.filename, err
         );
         process::exit(1);
     });

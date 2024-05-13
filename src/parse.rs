@@ -24,7 +24,7 @@ pub fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>,
         return if is_ignore_invalid_line {
             Ok(None)
         } else {
-            Err(format!("不正な行が検知されました。[{}]", line))
+            Err(format!("Invalid line detected. line: {}", line))
         };
     }
 
@@ -33,7 +33,7 @@ pub fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>,
         return if is_ignore_invalid_line {
             Ok(None)
         } else {
-            Err(format!("不正な行が検知されました。[{}]", line))
+            Err(format!("Invalid line detected. line: {}", line))
         };
     }
 
@@ -64,7 +64,7 @@ mod tests {
     fn parse_line_invalid() {
         assert_eq!(
             parse_line("xxx", "="),
-            Err("不正な行が検知されました。[xxx]".to_string())
+            Err("Invalid line detected. line: xxx".to_string())
         );
     }
 
@@ -77,7 +77,7 @@ mod tests {
     fn parse_line_invalid_key_is_empty() {
         assert_eq!(
             parse_line("=xxx", "="),
-            Err("不正な行が検知されました。[=xxx]".to_string())
+            Err("Invalid line detected. line: =xxx".to_string())
         );
     }
 

@@ -13,7 +13,7 @@ impl Config {
             match args.next() {
                 Some(arg) => arg,
                 None => return Err(
-                    "読み取り対象ファイル名の取得に失敗しました。ファイル名を指定してください。",
+                    "Failed to get the file name to read. Please specify a file name.",
                 ),
             };
 
