@@ -33,10 +33,10 @@ log.file -> string
 
 - `->` の左に key, 右に形式を指定する
 - 指定できる形式は以下
-  - string: 文字列
-  - bool: 真偽値（`true`, `false` の二値）
-  - int: 整数値（i32 の範囲）
-  - float: 浮動小数点値（f64 の範囲）
+    - string: 文字列
+    - bool: 真偽値（`true`, `false` の二値）
+    - int: 整数値（i32 の範囲）
+    - float: 浮動小数点値（f64 の範囲）
 
 ## run
 
@@ -53,5 +53,9 @@ cargo run resources/test/sysctl/sysctl.conf
 スキーマあり
 
 ```bash
-cargo run resources/test/sysctl/sysctl.conf resources/test/sysctl/schema/schema.txt
+# スキーマに合致する場合
+cargo run resources/test/sysctl/schema/sysctl_valid.conf resources/test/sysctl/schema/schema.txt
+
+# スキーマに合致しない場合
+cargo run resources/test/sysctl/schema/sysctl_invalid.conf resources/test/sysctl/schema/schema.txt
 ```
