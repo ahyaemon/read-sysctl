@@ -7,15 +7,15 @@ pub fn parse_line(mut line: &str, sep: &str) -> Result<Option<(String, String)>,
     if let Some(first_char) = line.chars().next() {
         if first_char == '-' {
             is_ignore_invalid_line = true;
-            line = &line[1..].trim();
+            line = line[1..].trim();
         }
     }
 
-    if line.starts_with("#") {
+    if line.starts_with('#') {
         return Ok(None);
     }
 
-    if line.starts_with(";") {
+    if line.starts_with(';') {
         return Ok(None);
     }
 

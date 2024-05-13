@@ -5,8 +5,8 @@ use std::path::Path;
 
 // https://doc.rust-lang.org/rust-by-example/std_misc/file/read_lines.html
 pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
+    where
+        P: AsRef<Path>,
 {
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
@@ -19,7 +19,7 @@ mod tests {
     #[test]
     fn file_exists() {
         let actual = read_lines("resources/test/file/test.txt").unwrap();
-        let li: Vec<String> = actual.flatten().collect();
+        let li: Vec<String> = actual.map_while(Result::ok).collect();
         assert_eq!(li, ["a", "", "bb"]);
     }
 
